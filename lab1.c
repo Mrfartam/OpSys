@@ -7,7 +7,7 @@ pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 int ready = 0;
 int k = 1;
 
-void* consume(void* arg){
+void* consumer(void* arg){
     while(k <= 10)
     {
         pthread_mutex_lock(&lock);
@@ -22,7 +22,7 @@ void* consume(void* arg){
     }
 }
 
-void* provide(void* arg){
+void* provider(void* arg){
     while(k <= 10){
         pthread_mutex_lock(&lock);
         if (ready == 1){
@@ -40,8 +40,8 @@ void* provide(void* arg){
 int main(){
     pthread_t prov, cons;
     
-    pthread_create(&prov, NULL, provide, NULL);
-    pthread_create(&cons, NULL, consume, NULL);
+    pthread_create(&prov, NULL, provider, NULL);
+    pthread_create(&cons, NULL, consumer, NULL);
 
     pthread_join(prov, NULL);
     pthread_join(cons, NULL);
