@@ -4,8 +4,8 @@
 
 pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-int ready = 0;
-int k = 1;
+int volatile ready = 0;
+int volatile k = 1;
 
 void* consumer(void* arg){
     while(k <= 10)
