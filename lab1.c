@@ -8,7 +8,7 @@ int ready = 0;
 int k = 1;
 
 void* consume(void* arg){
-    while(1)
+    while(k < 10)
     {
         pthread_mutex_lock(&lock);
         while(ready == 0){
@@ -23,7 +23,7 @@ void* consume(void* arg){
 }
 
 void* provide(void* arg){
-    while(1){
+    while(k < 10){
         pthread_mutex_lock(&lock);
         if (ready == 1){
             pthread_mutex_unlock(&lock);
