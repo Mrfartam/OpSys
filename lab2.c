@@ -50,9 +50,9 @@ int main(){
   while(1){
     if(wasSigHup){
       printf("Получен сигнал SIGHUP.\n");
-      if(client_socket == -1){
+      if(client_socket != -1){
         close(client_socket);
-        client_socket = -1
+        client_socket = -1;
         printf("Сокет клиента закрыт.\n");
       }
       wasSigHup = 0;
