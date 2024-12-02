@@ -1,4 +1,4 @@
-obj-m := lab3.o
+obj-m := lab4.o
 
 PWD := $(CURDIR)
 
