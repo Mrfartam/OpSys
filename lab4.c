@@ -9,7 +9,7 @@
 
 #define PROC_FILENAME "lab4"
 
-static char time_buffer[64];
+static char time_buffer[128];
 static int time_buffer_len;
 
 MODULE_LICENSE("GPL");
@@ -25,12 +25,12 @@ void calc_time(char *buffer, size_t buffer_size){
 
     ktime_get_real_ts64(&ts);
 
-    time64_to_tm(ts.tv_sec, 0, &tm);
+    time64_to_tm(ts.tv_sec + 7 * 3600, 0, &tm);
 
     seconds_now = tm.tm_hour * 3600 + tm.tm_min * 60 + tm.tm_sec;
     seconds_left = 86400 - seconds_now;
     hours = seconds_left / 3600;
-    minutes = (seconds_left % 3600) / 60;
+    minutes = (seconds_left % 3600) / 60 + 1;
 
     if(hours == 1 || hours == 21){
         if(minutes % 10 == 1 && minutes != 11)
@@ -59,18 +59,20 @@ void calc_time(char *buffer, size_t buffer_size){
     
 }
 
-static ssize_t procfile_read(struct file *file_pointer, char __user *buffer, size_t buffer_lenght, loff_t *offset){
-    if(*offset > 0 || buffer_lenght < time_buffer_len)
+static ssize_t procfile_read(struct file *file_pointer, char __user *buffer, size_t buffer_len, loff_t *offset){
+    if(*offset > 0 || buffer_len < time_buffer_len)
         return 0;
     
-    calc_time(time_buffer, sizeof(time_buffer));
-    time_buffer_len = strlen(time_buffer);
+    if(*offset == 0){
+        calc_time(time_buffer, sizeof(time_buffer));
+        time_buffer_len = strlen(time_buffer);
+    }
 
-    copy_to_user(buffer, time_buffer, time_buffer_len);
+    copy_to_user(buffer, time_buffer + *offset, time_buffer_len - *offset);
 
     pr_info("Чтение procfile %s\n", file_pointer->f_path.dentry->d_name.name);
 
-    *offset = time_buffer_len;
+    *offset += time_buffer_len - *offset;
 
     return time_buffer_len;
 }
