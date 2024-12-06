@@ -7,7 +7,7 @@
 #include <linux/uaccess.h>
 #include <linux/init.h>
 
-#define PROC_FILENAME "lab4"
+#define PROC_FILENAME "tsulab"
 
 static char time_buffer[128];
 static int time_buffer_len;
